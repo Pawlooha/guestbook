@@ -68,7 +68,7 @@ function loginUser($login, $password){
     }
     else{
         echo 'Неверный логин или пароль!';
-        print mysqli_error($conn);
+        var_dump($sql);
     }
 }
 function registerUser($login, $pass, $confirm){
@@ -79,7 +79,7 @@ function registerUser($login, $pass, $confirm){
         //добавить проверку нет ли уже такого пользователя
         $sql = "INSERT INTO `users` (`login`, `password`)
     VALUES ('{$login}','{$password}')";
-        if(mysqli_query("$conn, $sql")){
+        if(mysqli_query($conn, $sql)){
             //mysql_query возвращает true в случае успеха вставки записи
             echo 'Вы успешно зарегистрировались!<br/>';
         }
