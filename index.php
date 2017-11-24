@@ -13,21 +13,15 @@ session_start();
 <div class="add"><a href = "add.php"> Добавить сообщение</a></div>
     <br><br><br><br><br><br><br><br><br><br><br><br><br>
 <?php
-
 require_once('config.php');
 require_once ("functions.php");
-
-
 if(isUserLoggedIn()){
     if($_GET['action']==logout){
         logoutUser();
     }
     //если пользователь авторизован, поприветствуем его :)
-    echo 'Привет, '.$_SESSION['user'][1].'!';
-    var_dump($_SESSION);
-    var_dump($_SERVER);
-    //TODO: кнопка выхода
-    echo '<br/><a href="?action=logout">Выход</a>';
+    echo '<form>Здорова, '.$_SESSION['user'][1].'!
+    <br><br><br><div class "privet"><a href="?action=logout">Выход</a></div></form>';
 }
 else{ //если пользователь не авторизован
     //если action не пустой, проверяем, что передано
