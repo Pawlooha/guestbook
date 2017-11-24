@@ -55,7 +55,7 @@ function loginUser($login, $password){
     $user = mysqli_fetch_row ($result);
     if(!is_null($user)){
         $_SESSION['user'] = $user;
-        header("Refresh: 0; url=index.php");
+        echo"<script>document.location.href='index.php';</script>";
     }
     else{
         echo 'Неверный логин или пароль!';
