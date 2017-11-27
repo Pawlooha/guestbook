@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once ("config.php");//подключение базы данных
+require_once ("config.php");//подключение базы данных
 $conn = mysqli_connect($hostname, $user, $pass, $db)
 or die("Не могу подключиться к базе данных! Причина:".mysqli_error($conn));
 mysqli_query($conn, "set names 'utf8'");
@@ -19,16 +19,18 @@ if (isset ($_POST['add'])){
 	$user = $_SESSION['user'][1];
 	}
 	else {
-	$user = $_POST['user']."<br>(Аноним)";	
+	$anonim = "(Аноним)";
+	$user = strip_tags(trim($_POST['user'])).$anonim;	
 	}
 	mysqli_query ($conn, "
 	INSERT INTO autobarachlo(title, user, text, date, time) 
 	VALUES('$title', '$user', '$text', '$date', '$time')
 	");
 	mysqli_close($conn);
-	header("Refresh: 2; url=index.php");//переход на главную
+	header("Refresh: 1; url=index.php");//переход на главную
 	echo "Сообщение успешно добавлено!";
 }
+$user = $_SESSION['user'][1];
 ?>
 <!doctype html>
 <html>
@@ -45,7 +47,7 @@ if (isset ($_POST['add'])){
 Автор
 <input type="text" name="user" value="<?php echo $user?>"/><br>
 <input type="hidden" name="date" value="<?php echo date('Y-m-d')?>"/><br>
-<input type="hidden" name="time" value="<?php echo date('H-i')?>"/><br>
+<input type="hidden" name="time" value="<?php echo date('H:i')?>"/><br>
 <input type="submit" name="add" value= "добавить"/>	
 </form>
 </body>

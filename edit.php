@@ -13,13 +13,25 @@ ini_set("display_errors", 1);
 		echo "Не удалось найти запись";
 		die();
 		}
+function isUserLoggedIn(){
+    if(!empty($_SESSION['user'][1])){
+        return true;
+    }
+    else return false;
+ }
     if (isset($_POST['save'])) {     //если кнопка save нажата
+    	$anonim = "(Аноним)";
 		$title = strip_tags(trim($_POST['title']));
-		$user = strip_tags(trim($_POST['user']));
 		$text = strip_tags(trim($_POST['text']));
-	mysqli_query ($conn, "
+		if (isUserLoggedIn()){
+		$user = $_SESSION['user'][1];
+		}
+		else {
+		$user = $userMessage['user'];
+		}
+		mysqli_query ($conn, "
 		UPDATE autobarachlo SET title='$title', user='$user', text='$text' WHERE id = '$id'"); //сохраняется сообщение
-	header("Refresh: 2; url=index.php"); //переход на главную
+	header("Refresh: 1; url=index.php"); //переход на главную
 	echo "Сообщение успешно отредактировано!
 	сейчас вы перейдёте на главную страницу.";
 	mysqli_close($conn);
@@ -38,10 +50,8 @@ ini_set("display_errors", 1);
 <input type="text" name="title" value="<?php echo $userMessage ['title']; ?>"/><br/>
 
 Текст сообщения<br>
-<textarea cols="40" rows="10" name="text"><?php echo $userMessage ['text']; ?></textarea><br/>
-
-Автор
-<input type="text" name="user" value="<?php echo $userMessage['user']; ?>"/><br/>
+<textarea cols="40" rows="10" name="text"><?php echo $userMessage ['text']; ?></textarea><br>
+Автор:<p name="user"><?php echo $userMessage['user'];?><p/><br/>
 <input type="submit" name="save" value= "сохранить"/>	
 </form>
 </body>

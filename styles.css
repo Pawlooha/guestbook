@@ -79,39 +79,41 @@ input{
 	text-align: center;
 }
 .date{
-	position: relative;
+	position: relative-fixed;
 	left: 740px;
 	bottom: -150px;
 }
 .time{
-	position: relative;
+	position: relative-fixed;
 	left: 740px;
 	bottom: -140px;
 }
 .author{
-	position: relative;
+	position: relative-fixed;
 	left: 10px;
 	bottom: -80px;
 	font-size: 23px;
 	font-color: blue;
 }
 .delete{
-	border: 1px solid steelblue;
+	border: 5px solid steelblue;
 	border-radius: 10px 10px;
 	color: black;
 	background: lightskyblue;
-	position: relative;
+	position: relative-fixed;
 	left: 800px;
-	bottom: -70px;
+	bottom: -75px;
+	
 }
 .edit{
 	border: 1px solid steelblue;
 	border-radius: 10px 10px;
 	color: black;
 	background: lightskyblue;
-	position: relative;
+	position: relative-fixed;
 	left: 10px;
-	bottom: -85px;
+	bottom: -95px;
+	
 }
 img{
 	position: fixed;
@@ -122,4 +124,7 @@ img{
 	position: fixed;
 	top: 130px;
 	z-index: 6;
+}
+.hidden{
+	display: none;
 }

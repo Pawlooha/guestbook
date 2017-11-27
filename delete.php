@@ -6,6 +6,6 @@ mysqli_query($conn, "set names 'utf8'");
 $id= $_GET['id'];
 mysqli_query($conn, "DELETE FROM autobarachlo WHERE id= '$id'");
 mysqli_close($conn);
-header("Refresh: 2; url=index.php"); 
+header("Refresh: 1; url=index.php"); 
 echo "Сообщение удалено!";
 ?>

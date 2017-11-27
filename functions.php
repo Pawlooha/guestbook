@@ -4,6 +4,24 @@ session_start();
 $conn = mysqli_connect($hostname, $user, $pass, $db)
 or die("Не могу подключиться к базе данных! Причина:".mysqli_error($conn));
 mysqli_query($conn, "set names 'utf8'");
+//права доступа
+$type = $_SESSION['user'][2];
+switch ($type) {
+        case 'admin':
+        $hidden1 = "edit";
+        $hidden2 = "delete";
+            echo "ОПА";
+            break;
+        case 'user':
+        $hidden1 = "hidden";
+        $hidden2 = "hidden";
+            echo "ОП ОП";
+            break;
+        default:
+        $hidden1 = "hidden";
+        $hidden2 = "hidden";
+        echo "ОПа ОПа";
+}
 //постраничная навигация
 $page = $_GET['page'];
 $result00 = mysqli_query($conn, "SELECT COUNT(*) FROM autobarachlo");
@@ -32,18 +50,21 @@ if($page + 2 <= $total) $page2right = ' | <a href=index.php?page='. ($page + 2) 
 if($page + 1 <= $total) $page1right = ' | <a href=index.php?page='. ($page + 1) .'>'. ($page + 1) .'</a>';
 //вывод сообщений если они есть в таблице
 $result = mysqli_query ($conn, "SELECT * FROM autobarachlo ORDER BY id DESC LIMIT $start, $num");
-while ($usermessage = mysqli_fetch_array($result)) {
-?>
-		<div class="usermessage"><h1> <?php echo $usermessage ['title'] . "<br>" ?> </h1>
-		<p> <?php echo $usermessage ['text'] . "<br>" ?></p>
-		<p class="date"> Дата публикации: <?php echo $usermessage ['date'] . "<br>" ?></p>
-		<p class="time"> Время публикации: <?php echo $usermessage ['time'] . "<br>" ?></p>
-		<p class="author"> Автор: <?php echo $usermessage ['user'] . "<br>" ?></p>
-		<a class="edit" href = "edit.php?id=<?php echo $usermessage ['id']?>"> Редактировать сообщение</a><br> 
-		<a class="delete" href = "delete.php?id=<?php echo $usermessage ['id']?>"> Удалить сообщение</a>
-	</div>
-	<hr>
-<?php 
+if (!empty($result)) {
+ 	while ($usermessage = mysqli_fetch_array($result)) {
+    echo '<div class="usermessage"><h1>';
+    echo $usermessage ["title"] . '<br></h1>
+    <p>'; echo $usermessage ["text"] . '<br></p>
+    <p class="date"> Дата публикации:'; echo $usermessage ["date"] . '<br></p>
+    <p class="time"> Время публикации:';echo $usermessage ["time"] . '<br></p>
+    <p class="author"> Автор:'; echo $usermessage ["user"] . '<br></p>
+    <a class="';echo $hidden1.'" href = "edit.php?id='.$usermessage ["id"].'">Редактировать сообщение</a>
+    <a class="';echo $hidden2.'" href = "delete.php?id='.$usermessage ["id"].'">Удалить сообщение</a></div><hr>'.
+    '<br><br><br><br>';
+	}
+}
+else{
+echo "Нет ни одной записи";
 }
 function loginUser($login, $password){
 	global $conn; //разрешаем доступ к переменной внутри функции
@@ -56,7 +77,7 @@ function loginUser($login, $password){
     if(!is_null($user)){
         $_SESSION['user'] = $user;
         echo"<script>document.location.href='index.php';</script>";
-    }
+            }
     else{
         echo 'Неверный логин или пароль!';
         var_dump($sql);
@@ -64,25 +85,30 @@ function loginUser($login, $password){
 }
 function registerUser($login, $pass, $confirm){
 	global $conn;
-	/*$query = "SELECT * FROM users WHERE login = '$login'";
-	$res = mysqli_query($conn, $query) or die(mysqli_error());
-	$logset = mysqli_fetch_array($res);*/
-    if($pass==$confirm and $login!=$logset){
-       $password = md5($pass);
-        $sql = "INSERT INTO `users` (`login`, `password`)
-    VALUES ('{$login}','{$password}')";
-        if(mysqli_query($conn, $sql)){
-            //mysql_query возвращает true в случае успеха вставки записи
-            echo '<div class="yes">Вы успешно зарегистрировались!</div><br/>';
-        }
-        else{
-            echo 'Ошибка при выполнении запроса добавления новости<br/>';
-            print mysqli_error();
-        }
+	$logset = $_POST['login'];
+	$sel = "SELECT * FROM users WHERE login = '$login'";
+	$res = mysqli_query($conn, $sel);
+	$num = mysqli_num_rows($res);
+    if($pass!=$confirm){
+    	echo '<form>Пароли не совпали</form>';
     }
     else{
-        echo 'Все плохо';
-    }
+    	if ($num == 0) {
+    	$password = md5($pass);
+        $sql = "INSERT INTO `users` (`login`, `password`) VALUES ('{$login}','{$password}')";
+       		if(mysqli_query($conn, $sql)){
+            echo"<script>document.location.href='index.php';</script>Вы успешно зарегистрировались!";
+            }
+        	else{
+            echo 'Ошибка при выполнении запроса добавления новости<br/>';
+            print mysqli_error();
+            }
+    	}
+    	else{
+    	echo '<form>Пользователь с таким именем уже существует</form>';
+    	}
+    
+	}
 }
 function showRegForm(){
     echo '<form action="?action=register" method="post" class="testreg">
@@ -101,7 +127,7 @@ function showLoginForm(){
 	</form>';
 }
 function isUserLoggedIn(){
-    if(!empty($_SESSION['user'][1])){
+    if(!empty($_SESSION['user'])){
         return true;
     }
     else return false;

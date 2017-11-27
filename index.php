@@ -22,7 +22,7 @@ if(isUserLoggedIn()){
     //если пользователь авторизован, поприветствуем его :)
     echo '<form>Здорова, '.$_SESSION['user'][1].'!
     <br><br><br><div class "privet"><a href="?action=logout">Выход</a></div></form>';
-}
+    }
 else{ //если пользователь не авторизован
     //если action не пустой, проверяем, что передано
     switch($_GET['action']){
